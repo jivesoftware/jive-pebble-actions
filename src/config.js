@@ -10,20 +10,25 @@ module.exports = [
         appKey : "JIVEURL",
         attributes : {
           placeholder : "example.jiveon.com",
-          required: "required",
+          required: "required"
         }
       },
       {
         type:"input",
         label:"Username:",
-        appKey:"USERNAME"
+        appKey:"USERNAME",
+        attributes : {
+          placeholder : "Username",
+          required: "required",
+          type: "text"
+        }
       },
       {
         type:"input",
         label:"Password:",
         appKey:"PASSWORD",
         attributes : {
-          placeholder : "eg: name@domain.com",
+          placeholder : "Password",
           required: "required",
           type: "password"
         }

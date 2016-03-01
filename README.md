@@ -3,7 +3,8 @@
 # Pebble Jive Actions Box
 This is a Jive Actions inbox for the Pebble Watch. Receive action items and respond to them right from you Pebble watch!
 
-**Uses the Clay library to display config from phone storage instead of an externally hosted configuration screen.**
+**Uses the Clay library to display config from offline phone storage instead of an externally hosted configuration screen.**
+https://github.com/pebble/clay
 
 *Currently in beta!*
 

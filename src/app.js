@@ -8,6 +8,9 @@ Description:
 This app shows Jive action items and allows you to respond to action activities from a Pebble Watch that supports Pebble.Js
 */
 
+
+// TO DO: Handle login/auth error better
+
 var UI = require('ui');
 var ajax = require('ajax');
 
@@ -70,7 +73,6 @@ function sendAction(URL, actionCaption, actCard, actionMenu){
   var username = localStorage.getItem(keys.USERNAME);
   var password = localStorage.getItem(keys.PASSWORD);
   
-  console.log(URL + "/actions/" + actionCaption);
   ajax(
     {
       url: URL + "/actions/" + actionCaption,
@@ -81,8 +83,6 @@ function sendAction(URL, actionCaption, actCard, actionMenu){
       } 
     },
     function(data, status, request) {
-      console.log(status);
-      console.log(JSON.stringify(data));
       actCard.hide();
       actCard = new UI.Card({
         icon : "images/j.png",
@@ -90,10 +90,11 @@ function sendAction(URL, actionCaption, actCard, actionMenu){
       });
       actCard.show();
       setTimeout(function(){
+        // Destroy the card from memory so the user doesn't go back to it
         actCard.hide();
         actionMenu.hide();
+        init();
       },2500);
-      init();
     },
     function(error, status, request) {
         var errorCard = new UI.Card ({
@@ -124,7 +125,9 @@ function displayActions(sortedList){
   var menuList = sortedList.map(function(obj){
     return {title: obj.displayName, subtitle: obj.content}; 
   });
+  
   card.hide();
+  
   var menu = new UI.Menu({
       backgroundColor: 'white',
       textColor: 'black',
@@ -138,6 +141,7 @@ function displayActions(sortedList){
   menu.show();
   var actionCard = new UI.Card({});
   
+  // The card that displays the menu item can only show so many characters on non-scrollable window
   menu.on('select',function(e){
     var actionItem = sortedList[e.itemIndex];
     var cardTitle = (actionItem.content.length > 19) ? (actionItem.content.substring(0,16) + "...") : actionItem.content;
@@ -145,6 +149,10 @@ function displayActions(sortedList){
     var buttonCaption = [];
     var i = 0;
     
+    // Adds the associated button presses and image to the captions.
+    // Store the captions related to the buttons for the "on" press event.
+    // The captions are sent in a POST request to Jive on button press.
+    // Buttons without any actions shouldn't do anything.
     while(i < actionItem.actionLinks.length){
       for(var j = 0; j < captionImages.length; j++){
         if(actionItem.actionLinks[i].caption === captionImages[j].caption){
@@ -159,6 +167,7 @@ function displayActions(sortedList){
       }
       i++;
     }
+    // Sets the actionCard properties and then displays it
     actionCard.title(cardTitle);
     actionCard.body(sortedList[e.itemIndex].actionTitle);
     actionCard.action(actions);
@@ -203,7 +212,6 @@ function sortActions(payload){
         content : payload[i].content
       };
     } else if (payload[i].verb === "jive:action:joinSocialGroupApproval"){
-      console.log(JSON.stringify(payload[i]));
       itemsList[itemsList.length] = {
         displayName : "Jive Group Invite",
         actionTitle : "Join Jive Group?",
@@ -243,7 +251,6 @@ function fetchActionItems(url, user, pass){
       card.body("Please check your login credentials");
       return;
     }
-    console.log(status);
     card.body("Status: " + status + "\nError: " + JSON.stringify(error));
     card.scrollable(true);
   });
@@ -252,7 +259,7 @@ function fetchActionItems(url, user, pass){
 
 // Displays a notificaiton to login
 function promptLogin(){
-  card.body("Please login to Jive in the Pebble app config settings and then restart the app on Pebble watch");
+  card.body("Please login to Jive in the Pebble app config settings and then restart the app on your Pebble watch");
   card.show();
 }
 
