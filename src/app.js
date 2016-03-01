@@ -86,7 +86,7 @@ function sendAction(URL, actionCaption, actCard, actionMenu){
       actCard.hide();
       actCard = new UI.Card({
         icon : "images/j.png",
-        title : " Message Sent!"
+        title : " Action Sent!"
       });
       actCard.show();
       setTimeout(function(){
