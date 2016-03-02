@@ -189,6 +189,8 @@ function displayActions(sortedList){
 
 // After actions are retrieved from Jive, we can sort out the types of Jive
 // verbs we want to display on the watch.
+// For a list of /actions verbs: https://community.jivesoftware.com/docs/DOC-189749
+//
 // In this scenario, we are only subscribing to 3 different types:
 // userRelationshipNotification, joinSocialGroupApproval, and action activties
 // created from posting the object to the /activities/ endpoint.
